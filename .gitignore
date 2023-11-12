@@ -1,0 +1,21 @@
+# Generic ignores
+*.log
+*.log.*
+*.db
+*.db-shm
+*.db-wal
+*.pyc
+._*
+__pycache__
+
+# Ignore files created by IDE's
+.vscode
+.Trash*
+
+# Ignore Mac OS hidden files 
+**/.DS_Store
+
+# Ignore drafts and temporary files
+**/drafts
+**/old
+**/scripts

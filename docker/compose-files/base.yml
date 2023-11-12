@@ -1,0 +1,31 @@
+version: "3"
+name: "base"
+services:
+    portainer:
+        container_name: portainer
+        image: 'portainer/portainer-ce:latest'
+        restart: always
+        ports:
+            #- "9000:9000"
+            # Only to https
+            - "9443:9443"
+        environment:
+            - TZ=Europe/Paris
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /mnt/usbdrive/docker/volumes/portainer:/data
+        logging:
+            driver: "fluentd"
+            options:
+              fluentd-address: localhost:24224
+              tag: portainer
+
+    fluentd:
+        container_name: fluentd
+        image: 'fluent/fluentd-edge-debian-armhf'
+        restart: always
+        ports:
+            - "24224:24224"
+            - "24224:24224/udp"
+        volumes:
+            - ./fluentd/conf:/fluentd/etc

@@ -1,0 +1,127 @@
+version: "3"
+name: "homeautomation"
+# .env file shall be located in the same directory
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    container_name: mosquitto
+    hostname: domopi.mosquitto.local
+    restart: unless-stopped
+    volumes:
+      - "${DATADIR}/conf/mosquitto:/mosquitto/config"
+      - "${DATADIR}/volumes/mosquitto:/mosquitto/data"
+      - "${DATADIR}/logs/mosquitto:/mosquitto/log"
+    ports:
+      - 1883:1883
+
+  homeassistant:
+    container_name: homeassistant
+    restart: unless-stopped
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    #devices:
+    #  - /dev/ttyUSB0:/dev/ttyUSB0
+    #  - /dev/ttyUSB1:/dev/ttyUSB1
+    #  - /dev/ttyACM0:/dev/ttyACM0
+    volumes:
+      - ${DATADIR}/volumes/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    network_mode: host
+    privileged: true
+    #depends_on:
+    #  influxdb:
+    #    condition: service_healthy
+    #  mosquitto:
+    #    condition: service_started
+    #ports:
+    #  - 8123:8123
+    #environment:
+    #   - PUID=${PUID}
+    #   - PGID=${PGID}
+    #   - TZ=${TZ}
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: homeassistant
+
+  zwave-js-ui:
+    image: zwavejs/zwave-js-ui:latest
+    container_name: zwave-js-ui
+    hostname: domopi.zwavejsui.local
+    restart: always
+    tty: true
+    stop_signal: SIGINT
+    environment:
+      - SESSION_SECRET=mysupersecretkey
+      - ZWAVEJS_EXTERNAL_CONFIG=/usr/src/app/store/.config-db
+      # Uncomment if you want log times and dates to match your timezone instead of UTC
+      # Available at https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+      - TZ=Europe/Paris
+    networks:
+      - zwave
+    devices:
+      # Do not use /dev/ttyUSBX serial devices, as those mappings can change over time.
+      # Instead, use the /dev/serial/by-id/X serial device for your Z-Wave stick.
+      - '/dev/serial/by-id/usb-0658_0200-if00:/dev/zwave'
+    volumes:
+      - /mnt/usbdrive/docker/volumes/zwave-js:/usr/src/app/store
+   # Or by using local folder
+   # - ./store:/usr/src/app/store
+    ports:
+      - "8091:8091" # port for web interface
+      - "3000:3000" # port for Z-Wave JS websocket server
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: zwave-js-ui  
+
+  airsend-ws:
+    image: devmel/airsend-ws:1.0
+    container_name: airsend-ws
+    restart: always
+    network_mode: host
+    ports:
+      - "8080:80"
+      - "9090:9090"
+      - "33863:33863"
+      #- "53480:53480/udp"
+    #volumes:
+    # - /mnt/usbdrive/docker/volumes/airsend-ws:/home
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: airsend-ws
+
+  node-red:
+    image: nodered/node-red:latest-12-minimal
+    container_name: node-red
+    environment:
+      - TZ=Europe/Paris
+    ports:
+      - "1880:1880"
+    #networks:
+      #- node-red-net
+    volumes:
+      - /mnt/usbdrive/docker/volumes/node-red:/data
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: node-red
+
+  esphome:
+    container_name: esphome
+    image: esphome/esphome
+    volumes:
+      - /mnt/usbdrive/docker/volumes/esphome/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    privileged: true
+    network_mode: host
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: esphome 
