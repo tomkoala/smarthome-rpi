@@ -163,7 +163,7 @@ docker-compose -f portainer.yml up -d
 docker-compose ls
 ```
 
-To list downloaded images to create the containers 
+To list downloaded images required to create the containers 
 ```
 docker image ls
 ```

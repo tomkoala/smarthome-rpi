@@ -4,7 +4,7 @@ Node-RED is a flow-based programming tool built upon NodeJS.
 
 ## Install the docker container
 
-Below an example of a Docker Compose file which can be run by docker stack or docker-compose. Please refer to the official Docker pages for more info about Docker stack and Docker compose.
+Below an example of a Docker Compose file which can be run by docker stack or docker-compose.
 
 ```
 services:
@@ -40,12 +40,10 @@ The above compose file:
 
 ## Set folder permissions
 
-Attention ! Si vous utilisez un répertoire (et non un volume Docker), il faut que celui-ci appartienne à un utilisateur ayant comme uid 1000 et guid 1000. (voir la documentation)
-
-Si l'utilisateur qui lance la stack n'a pas les bons uid et guid (comme root), vous pouvez simplement utiliser la commande suivante :
+Make sure your host directory exists and is owned by a user with 1000:1000.
 
 ```
 chown 1000:1000 /votre/repertoire/nodered/data
 ```
 
-https://github.com/node-red/node-red-docker/wiki/Permissions-and-Persistence
+> Reference docs : https://github.com/node-red/node-red-docker/wiki/Permissions-and-Persistence

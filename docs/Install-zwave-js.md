@@ -12,7 +12,7 @@ The Z-Wave JS UI includes the server and allows to :
 
 ## Device Configuration
 
-Configure the path for the serial device
+Plug the Z-wave controller on host and search for the serial device
 
 ```
 $ lsusb
@@ -57,10 +57,15 @@ services:
 networks:
   zwave: 
 ```
+Finally run the container
+
+```
+docker-compose -f compose-files/z-wave-ui.yml up -d
+```
 
 ## Setup
 
-The Web UI is accessible from http://device-ip:8091
+The Web UI is accessible from http://hostname.local:8091
 
 ### General
 
@@ -86,8 +91,8 @@ Z-Wave network keys for secure inclusion S0/S2. You can manually input them or a
 
 ### MQTT settings
 
-Enter the broker info including credentials (username/pwd). 
-To reach another docker container localhost cannot be used.
+Enter the broker info including credentials (username/password). 
+To reach another docker container `localhost` cannot be used, instead use the Host IP address.
 
 ## Enable the Home Assistant integration
 
@@ -104,15 +109,15 @@ Nodes can be managed from the Control Panel page by clicking on `Actions > Manag
 
 ![Z-wave JS Nodes manager](https://zwave-js.github.io/zwave-js-ui/_images/nodes_manager.png)
 
-https://zwave-js.github.io/zwave-js-ui//#/usage/nodes-management
+> Reference docs : https://zwave-js.github.io/zwave-js-ui//#/usage/nodes-management
 
 ## Display network graph
 
 In that tab Z-Wave mesh network can be visualized and you can also check connectivity issues between nodes and the controller.
 
-http://device-ip:8091/mesh
+http://hostname.local:8091/mesh
 
-By clicking on nodes  a panel will open containing more detailed node information, including the last working route (if supported by your stick). At the bottom of this panel there is a button CHECK HEALTH that opens a dialog that allows to perform health checks on that node.
+By clicking on nodes  a panel will open containing more detailed node information, including the last working route (if supported by your stick). At the bottom of this panel there is a button *CHECK HEALTH* that opens a dialog that allows to perform health checks on that node.
 
 ## Environment variables
 

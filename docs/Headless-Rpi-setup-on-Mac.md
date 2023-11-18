@@ -39,7 +39,7 @@ sudo dd bs=1m if=path_of_your_image.img of=/dev/rdisk# conv=sync
 
 ## 3. Before first boot
 
-Enable SSH by placing a file named `ssh` (without any extension) onto the boot partition of the SD card
+Enable SSH by placing a file named `ssh` (without any extension) onto the boot partition of the SD card.
 Set up the Wifi by copying `wpa_supplicant.conf` in the same partition then edit the network psk (*password*)
 
 ## 4. First SSH login
@@ -63,7 +63,7 @@ Type `yes` followed by `Enter`.
 
 ## 5. Configure Pi
 
-To change hostname (e.g. domopi) and password as well as configure locales launch the following script :
+To change hostname (e.g. `domopi`) and password as well as configure locales launch the following script :
 ```
 sudo raspi-config
 ```
