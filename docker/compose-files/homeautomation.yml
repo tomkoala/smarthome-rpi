@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 name: "homeautomation"
 # .env file shall be located in the same directory
 services:
@@ -8,9 +8,9 @@ services:
     hostname: domopi.mosquitto.local
     restart: unless-stopped
     volumes:
-      - "${DATADIR}/conf/mosquitto:/mosquitto/config"
-      - "${DATADIR}/volumes/mosquitto:/mosquitto/data"
-      - "${DATADIR}/logs/mosquitto:/mosquitto/log"
+      - ${DATADIR}/conf/mosquitto:/mosquitto/config
+      - ${DATADIR}/volumes/mosquitto:/mosquitto/data
+      - ${DATADIR}/logs/mosquitto:/mosquitto/log
     ports:
       - 1883:1883
 
@@ -38,6 +38,21 @@ services:
     #   - PUID=${PUID}
     #   - PGID=${PGID}
     #   - TZ=${TZ}
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: localhost:24224
+        tag: homeassistant
+
+  homeassistant-test:
+    container_name: homeassistant-test
+    restart: unless-stopped
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - ${DATADIR}/volumes/homeassistant-test/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - 8124:8124
     logging:
       driver: "fluentd"
       options:
